@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prof. Bolt — Turn Any Document Into a Video Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080f;
+  --surface:#0f0f1a;
+  --card:#13131f;
+  --border:#1e1e30;
+  --purple:#7c3aed;
+  --purple-light:#a78bfa;
+  --amber:#f59e0b;
+  --cream:#f0e6ff;
+  --text:#e2e8f0;
+  --muted:#4a4a6a;
+  --cyan:#22d3ee;
+  --green:#4ade80;
+  --rose:#f472b6;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#2a2a40;border-radius:3px}
+
+/* ── Animations ── */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes floatSlow{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes roboFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes roboBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+@keyframes armSwing{0%{transform:rotate(0)}100%{transform:rotate(-35deg)}}
+@keyframes armRaise{0%{transform:rotate(0)}100%{transform:rotate(-55deg)}}
+@keyframes armRaiseR{0%{transform:rotate(0)}100%{transform:rotate(55deg)}}
+@keyframes eyeGlow{0%{fill:#0f2027}100%{fill:#061520}}
+@keyframes pupilPulse{0%{transform:scale(.85)}100%{transform:scale(1.1)}}
+@keyframes chestGlow{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes antennaGlow{0%{opacity:.6}100%{opacity:1;filter:brightness(1.6)}}
+@keyframes badgePop{0%{transform:scale(0) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes wordReveal{0%{opacity:0;transform:translateY(8px) scale(.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes slideUp{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes progressFill{from{width:0%}to{width:100%}}
+@keyframes shimmer{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes orb{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-15px) scale(1.05)}66%{transform:translate(-15px,10px) scale(.97)}}
+@keyframes bubbleIn{0%{opacity:0;transform:scale(.9) translateY(10px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes recordPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+
+/* ── Hero / Landing ── */
+#hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:60px 20px 80px;
+  position:relative;overflow:hidden;
+  text-align:center;
+}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.orb1{width:400px;height:400px;background:rgba(124,58,237,.12);top:-100px;left:-100px;animation:orb 12s ease-in-out infinite}
+.orb2{width:300px;height:300px;background:rgba(167,139,250,.08);bottom:-80px;right:-80px;animation:orb 15s ease-in-out infinite reverse}
+.orb3{width:200px;height:200px;background:rgba(34,211,238,.06);top:50%;left:50%;transform:translate(-50%,-50%);animation:orb 10s ease-in-out infinite 2s}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);
+  border-radius:20px;padding:6px 16px;
+  font-size:11px;letter-spacing:3px;color:var(--purple-light);
+  text-transform:uppercase;margin-bottom:28px;
+  animation:slideUp .6s ease both;
+}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--purple-light);animation:shimmer 2s infinite}
+
+#hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(38px,7vw,76px);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-2px;color:#fff;
+  margin-bottom:20px;
+  animation:slideUp .6s ease .1s both;
+}
+#hero h1 .accent{
+  background:linear-gradient(135deg,var(--purple-light),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+#hero p.sub{
+  font-size:clamp(16px,2.5vw,20px);color:var(--muted);
+  max-width:560px;line-height:1.7;margin:0 auto 40px;
+  animation:slideUp .6s ease .2s both;
+}
+
+.hero-cta{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  animation:slideUp .6s ease .3s both;margin-bottom:60px;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--purple),var(--purple-light));
+  color:#fff;border:none;border-radius:14px;
+  padding:16px 32px;font-size:15px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  box-shadow:0 8px 30px rgba(124,58,237,.35);
+  transition:all .2s;text-decoration:none;display:inline-block;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,58,237,.5)}
+.btn-secondary{
+  background:transparent;color:var(--muted);
+  border:1px solid var(--border);border-radius:14px;
+  padding:16px 28px;font-size:15px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-secondary:hover{border-color:#333;color:var(--text)}
+
+/* ── Feature pills ── */
+.feature-pills{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  animation:slideUp .6s ease .4s both;margin-bottom:70px;
+}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:8px 14px;font-size:12px;color:#666;
+}
+.pill span{font-size:14px}
+
+/* ── Hero demo preview ── */
+.hero-preview{
+  width:100%;max-width:700px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:24px;padding:32px;
+  animation:slideUp .6s ease .5s both;
+  position:relative;overflow:hidden;
+}
+.hero-preview::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--purple),var(--purple-light),var(--cyan));
+  background-size:200% 100%;animation:gradientShift 3s linear infinite;
+}
+.preview-tag{
+  font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;
+  margin-bottom:16px;display:flex;align-items:center;gap:8px;
+}
+.preview-tag::after{content:'';flex:1;height:1px;background:var(--border)}
+.preview-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.preview-robo{flex-shrink:0;animation:floatSlow 4s ease-in-out infinite alternate}
+.preview-content{flex:1;min-width:200px;text-align:left}
+.preview-content h3{font-family:'Syne',sans-serif;font-size:18px;color:#fff;margin-bottom:8px}
+.preview-content p{font-size:13px;color:#555;line-height:1.7}
+.preview-steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.preview-step-pill{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:var(--purple-light);padding:4px 10px;border-radius:6px;font-size:11px}
+
+/* ── How it works ── */
+#how{padding:80px 20px;text-align:center}
+.section-label{font-size:10px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+#how h2{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:800;color:#fff;margin-bottom:50px;letter-spacing:-1px}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:900px;margin:0 auto}
+.how-step{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 22px;text-align:left;transition:border-color .2s}
+.how-step:hover{border-color:#333}
+.how-num{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:2px;color:var(--purple-light);margin-bottom:14px;display:block}
+.how-icon{font-size:32px;margin-bottom:12px;display:block}
+.how-step h3{font-family:'Syne',sans-serif;font-size:17px;color:#fff;margin-bottom:6px}
+.how-step p{font-size:13px;color:#555;line-height:1.7}
+
+/* ── App Section ── */
+#app{padding:60px 20px 80px;max-width:1100px;margin:0 auto}
+#app h2{font-family:'Syne',sans-serif;font-size:clamp(24px,3.5vw,36px);font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:6px}
+#app .sub{font-size:14px;color:var(--muted);margin-bottom:32px}
+
+.app-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start}
+@media(max-width:780px){.app-layout{grid-template-columns:1fr}}
+
+/* ── Input panel ── */
+.input-panel{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:26px;position:sticky;top:24px}
+.panel-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.panel-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+textarea#doc-input{
+  width:100%;height:200px;
+  background:rgba(255,255,255,.03);
+  border:1.5px solid var(--border);border-radius:14px;
+  padding:16px;color:var(--text);font-size:14px;
+  line-height:1.8;font-family:'DM Sans',sans-serif;
+  resize:vertical;outline:none;transition:border-color .2s;
+  margin-bottom:14px;
+}
+textarea#doc-input::placeholder{color:#2a2a40}
+textarea#doc-input:focus{border-color:rgba(124,58,237,.5)}
+
+.sample-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.sample-btn{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:var(--purple-light);padding:5px 12px;border-radius:8px;font-size:11px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.sample-btn:hover{background:rgba(124,58,237,.15)}
+
+#go-btn{
+  width:100%;background:linear-gradient(135deg,var(--purple),#9333ea);
+  color:#fff;border:none;border-radius:14px;
+  padding:16px;font-size:15px;font-weight:700;
+  cursor:pointer;font-family:'Syne',sans-serif;
+  box-shadow:0 6px 24px rgba(124,58,237,.35);
+  transition:all .25s;letter-spacing:.5px;
+}
+#go-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 32px rgba(124,58,237,.5)}
+#go-btn:disabled{background:#1a1a2a;color:#333;cursor:not-allowed;box-shadow:none}
+
+.usage-strip{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px}
+.usage-strip span{font-size:11px;color:var(--muted);letter-spacing:1px}
+.pips{display:flex;gap:5px}
+.pip{width:16px;height:8px;border-radius:4px;background:var(--border);transition:all .3s}
+.pip.used{background:rgba(124,58,237,.4)}
+.pip.active{background:var(--purple-light);box-shadow:0 0 8px rgba(167,139,250,.5)}
+.usage-strip .left{margin-left:auto;font-size:10px;color:#333;letter-spacing:1px}
+
+/* ── Output panel ── */
+.output-panel{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;min-height:500px;display:flex;flex-direction:column}
+
+/* States */
+#state-empty{padding:60px 30px;text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#state-empty .empty-robo{animation:floatSlow 4s ease-in-out infinite alternate;margin-bottom:20px}
+#state-empty h3{font-family:'Syne',sans-serif;font-size:20px;color:#1e1e2e;margin-bottom:6px}
+#state-empty p{font-size:13px;color:#2a2a40}
+
+#state-loading{padding:60px 30px;text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;display:none}
+.load-spinner{width:48px;height:48px;border:3px solid rgba(124,58,237,.2);border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+#state-loading h3{font-family:'Syne',sans-serif;font-size:18px;color:#fff}
+#state-loading p{font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:1px}
+
+/* ── Presentation mode ── */
+#state-present{display:none;flex-direction:column;flex:1}
+
+.pres-header{
+  padding:20px 24px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;
+}
+.pres-title{font-family:'Syne',sans-serif;font-size:16px;color:#fff;font-weight:800}
+.pres-actions{display:flex;gap:8px}
+.pres-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:11px;color:#666;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;letter-spacing:.5px}
+.pres-btn:hover{border-color:#333;color:var(--text)}
+.pres-btn.rec{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#ef4444}
+.pres-btn.rec.recording{animation:recordPulse 1.5s infinite}
+.pres-btn.primary-sm{background:linear-gradient(135deg,var(--purple),#9333ea);border:none;color:#fff}
+
+/* ── Stage ── */
+#pres-stage{
+  flex:1;
+  margin:16px 24px;
+  border-radius:16px;
+  background:#000;
+  position:relative;overflow:hidden;
+  min-height:360px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:30px 24px;
+  cursor:pointer;
+}
+#pres-stage::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,58,237,.08) 0%,transparent 60%);
+  pointer-events:none;
+}
+.stage-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.stage-orb{position:absolute;border-radius:50%;filter:blur(50px);pointer-events:none;animation:orb 8s ease-in-out infinite}
+.stage-orb1{width:200px;height:200px;background:rgba(124,58,237,.06);top:-60px;left:-40px}
+.stage-orb2{width:160px;height:160px;background:rgba(34,211,238,.04);bottom:-40px;right:-40px;animation-delay:3s}
+
+.stage-content{position:relative;z-index:2;display:flex;gap:20px;align-items:flex-start;width:100%;flex-wrap:wrap}
+.robo-col{flex-shrink:0}
+.robo-col svg{filter:drop-shadow(0 8px 24px rgba(0,0,0,.8))}
+
+.speech-col{flex:1;min-width:180px}
+.speech-bubble{
+  background:rgba(255,255,255,.04);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:14px 18px;
+  backdrop-filter:blur(8px);
+  transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+.speech-bubble.hidden{opacity:0;transform:translateY(10px) scale(.95)}
+.speech-bubble.visible{opacity:1;transform:translateY(0) scale(1);animation:bubbleIn .4s ease}
+.bubble-tail{position:absolute;left:-12px;top:20px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:12px solid rgba(255,255,255,.1)}
+.speech-bubble p{font-size:13px;line-height:1.75;color:#ccc;font-family:'DM Sans',sans-serif}
+
+.step-detail{margin-top:16px;animation:wordReveal .4s ease}
+.step-detail .step-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.step-emoji{font-size:28px}
+.step-title-text{font-family:'Syne',sans-serif;font-size:16px;color:#fff;font-weight:800}
+.kw-row{display:flex;align-items:center;gap:8px}
+.kw-label{font-size:9px;letter-spacing:2px;color:#333;text-transform:uppercase}
+.kw-badge{
+  background:rgba(124,58,237,.15);border:1.5px solid var(--purple);
+  color:var(--purple-light);padding:3px 12px;border-radius:6px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  font-family:'Courier Prime',monospace;
+  box-shadow:0 0 10px rgba(124,58,237,.2);
+  animation:badgePop .4s cubic-bezier(.34,1.56,.64,1);
+}
+.visual-hint{margin-top:10px;font-size:11px;color:#2a2a3a;font-style:italic;letter-spacing:.5px}
+
+/* Intro/takeaway states */
+.intro-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.intro-pill{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#665;padding:4px 10px;border-radius:5px;font-size:11px;color:var(--purple-light)}
+.takeaway-done{margin-top:14px;text-align:center}
+.takeaway-done p{font-size:10px;letter-spacing:3px;color:#222;text-transform:uppercase}
+
+/* Progress */
+#stage-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light),var(--cyan));transition:width .3s ease;box-shadow:0 0 8px rgba(124,58,237,.5)}
+#stage-counter{position:absolute;top:12px;right:14px;font-size:9px;color:#222;letter-spacing:2px;font-weight:700}
+
+/* Stage branding */
+#stage-brand{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:8px;letter-spacing:3px;color:#151525;text-transform:uppercase;font-weight:700}
+
+/* ── Presentation controls ── */
+.pres-controls{padding:12px 24px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctrl-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:12px;color:#666;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;letter-spacing:.5px}
+.ctrl-btn:hover{border-color:#333;color:var(--text)}
+.ctrl-btn.next{background:linear-gradient(135deg,var(--purple),#9333ea);border:none;color:#fff;font-weight:700;font-size:13px;padding:10px 24px;box-shadow:0 4px 16px rgba(124,58,237,.3)}
+.ctrl-btn.next:hover{box-shadow:0 6px 24px rgba(124,58,237,.5)}
+.ctrl-btn.auto.on{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.3);color:#4ade80}
+.dots-row{display:flex;gap:6px;align-items:center;margin-left:auto}
+.dot{height:7px;border-radius:4px;background:#1a1a2a;transition:all .35s}
+.dot.past{background:#3a2a5a;width:7px}
+.dot.active{background:var(--purple-light);box-shadow:0 0 8px rgba(167,139,250,.5);width:22px}
+.dot.future{width:7px}
+.jump-row{padding:0 24px 16px;display:flex;gap:6px;flex-wrap:wrap}
+.jump-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-size:10px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.jump-btn.on{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.4);color:var(--purple-light)}
+
+/* ── Theme color overrides ── */
+.theme-cyan #pres-stage::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,211,238,.06) 0%,transparent 60%)}
+.theme-cyan .kw-badge{background:rgba(34,211,238,.1);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(34,211,238,.15)}
+.theme-cyan #stage-progress{background:linear-gradient(90deg,#0891b2,var(--cyan))}
+.theme-amber #pres-stage::before{background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,.06) 0%,transparent 60%)}
+.theme-amber .kw-badge{background:rgba(245,158,11,.1);border-color:var(--amber);color:var(--amber);box-shadow:0 0 10px rgba(245,158,11,.15)}
+.theme-amber #stage-progress{background:linear-gradient(90deg,#d97706,var(--amber))}
+.theme-green #pres-stage::before{background:radial-gradient(ellipse at 50% 0%,rgba(74,222,128,.05) 0%,transparent 60%)}
+.theme-green .kw-badge{background:rgba(74,222,128,.1);border-color:var(--green);color:var(--green);box-shadow:0 0 10px rgba(74,222,128,.15)}
+.theme-green #stage-progress{background:linear-gradient(90deg,#16a34a,var(--green))}
+.theme-rose #pres-stage::before{background:radial-gradient(ellipse at 50% 0%,rgba(244,114,182,.06) 0%,transparent 60%)}
+.theme-rose .kw-badge{background:rgba(244,114,182,.1);border-color:var(--rose);color:var(--rose);box-shadow:0 0 10px rgba(244,114,182,.15)}
+.theme-rose #stage-progress{background:linear-gradient(90deg,#db2777,var(--rose))}
+
+/* ── Footer ── */
+#footer{padding:40px 20px;text-align:center;border-top:1px solid var(--border)}
+#footer p{font-size:11px;color:#2a2a40;letter-spacing:2px;text-transform:uppercase}
+#footer a{color:var(--purple-light);text-decoration:none}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .stage-content{justify-content:center}
+  .speech-bubble{max-width:100%}
+  .pres-controls{justify-content:center}
+  .dots-row{margin-left:0;width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    Powered by Google Gemini AI
+  </div>
+
+  <h1>
+    Turn Any Document Into<br>
+    An <span class="accent">Animated Lesson</span>
+  </h1>
+
+  <p class="sub">
+    Paste any text — a CA chapter, GST notification, Ind AS standard, or any document.
+    Prof. Bolt reads it and teaches it back, step by step, in seconds.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#app" class="btn-primary">⚡ Try It Free</a>
+    <button class="btn-secondary" onclick="scrollToHow()">How It Works →</button>
+  </div>
+
+  <div class="feature-pills">
+    <div class="pill"><span>🤖</span> Animated Robot Teacher</div>
+    <div class="pill"><span>⚡</span> Instant AI Analysis</div>
+    <div class="pill"><span>🎯</span> Step-by-Step Breakdown</div>
+    <div class="pill"><span>🆓</span> Completely Free</div>
+    <div class="pill"><span>📱</span> Works on Any Device</div>
+  </div>
+
+  <!-- Demo preview card -->
+  <div class="hero-preview">
+    <div class="preview-tag">Live Preview</div>
+    <div class="preview-row">
+      <div class="preview-robo">
+        <svg viewBox="0 0 100 200" width="90" height="180" id="hero-robo"></svg>
+      </div>
+      <div class="preview-content">
+        <h3>The FCP Method — Explained</h3>
+        <p>Prof. Bolt breaks down your most complex documents into clear, memorable steps — with analogies your audience actually understands.</p>
+        <div class="preview-steps">
+          <span class="preview-step-pill">📚 Foundation</span>
+          <span class="preview-step-pill">🔄 Conversion</span>
+          <span class="preview-step-pill">💡 Persuasion</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════ -->
+<section id="how">
+  <p class="section-label">Simple Process</p>
+  <h2>Three Steps to a Perfect Lesson</h2>
+  <div class="steps-grid">
+    <div class="how-step">
+      <span class="how-num">01</span>
+      <span class="how-icon">📄</span>
+      <h3>Paste Your Document</h3>
+      <p>Drop in any text — a chapter, article, policy document, or your own notes. Any length, any topic.</p>
+    </div>
+    <div class="how-step">
+      <span class="how-num">02</span>
+      <span class="how-icon">🧠</span>
+      <h3>Gemini AI Reads It</h3>
+      <p>Google's Gemini AI reads the document, finds the key ideas, and structures them into a clear lesson.</p>
+    </div>
+    <div class="how-step">
+      <span class="how-num">03</span>
+      <span class="how-icon">🤖</span>
+      <h3>Prof. Bolt Teaches It</h3>
+      <p>Your animated robot teacher presents the lesson step by step — with keywords, analogies, and a memorable takeaway.</p>
+    </div>
+    <div class="how-step">
+      <span class="how-num">04</span>
+      <span class="how-icon">🎬</span>
+      <h3>Record as a Short</h3>
+      <p>Hit record, screen-capture the presentation, and you have a polished video lesson ready to share.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     APP SECTION
+══════════════════════════════════════ -->
+<section id="app">
+  <h2>Create Your Lesson</h2>
+  <p class="sub">Paste your document below — Prof. Bolt does the rest.</p>
+
+  <div class="app-layout">
+
+    <!-- Input Panel -->
+    <div class="input-panel">
+      <div class="panel-label">Your Document</div>
+
+      <!-- Sample buttons -->
+      <div class="sample-btns">
+        <button class="sample-btn" onclick="loadSample('fcp')">FCP Method</button>
+        <button class="sample-btn" onclick="loadSample('gst')">GST Concept</button>
+        <button class="sample-btn" onclick="loadSample('ind')">Ind AS</button>
+        <button class="sample-btn" onclick="loadSample('ai')">AI Basics</button>
+      </div>
+
+      <textarea id="doc-input" placeholder="Paste your document, chapter, article, or notes here...
+
+Examples:
+• A CA Final chapter on financial reporting
+• A GST notification you want to simplify
+• Any concept you want explained clearly
+
+Prof. Bolt will read it and teach it back to you."></textarea>
+
+      <button id="go-btn" onclick="analyze()" disabled>⚡ Generate Lesson</button>
+
+      <!-- Usage -->
+      <div class="usage-strip">
+        <span>Today</span>
+        <div class="pips" id="pips"></div>
+        <span class="left" id="uses-left"></span>
+      </div>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="output-panel" id="output-panel">
+
+      <!-- Empty state -->
+      <div id="state-empty">
+        <div class="empty-robo">
+          <svg viewBox="0 0 100 200" width="80" height="160" id="empty-robo"></svg>
+        </div>
+        <h3>Ready to Teach</h3>
+        <p>Your lesson will appear here</p>
+      </div>
+
+      <!-- Loading state -->
+      <div id="state-loading">
+        <div class="load-spinner"></div>
+        <h3>Prof. Bolt is Reading...</h3>
+        <p>ANALYSING YOUR DOCUMENT</p>
+      </div>
+
+      <!-- Presentation state -->
+      <div id="state-present">
+
+        <div class="pres-header">
+          <div class="pres-title" id="pres-title"></div>
+          <div class="pres-actions">
+            <button class="pres-btn" onclick="resetAll()">↺ New</button>
+            <button class="pres-btn rec" id="rec-btn" onclick="toggleRecord()">⏺ Record</button>
+            <button class="pres-btn primary-sm" onclick="toggleFullscreen()">⛶ Full</button>
+          </div>
+        </div>
+
+        <!-- Stage -->
+        <div id="pres-stage" onclick="tapStage()">
+          <div class="stage-grid"></div>
+          <div class="stage-orb stage-orb1"></div>
+          <div class="stage-orb stage-orb2"></div>
+
+          <div class="stage-content">
+            <div class="robo-col">
+              <svg viewBox="0 0 100 200" width="100" height="200" id="stage-robo"></svg>
+            </div>
+            <div class="speech-col">
+              <div class="speech-bubble hidden" id="bubble">
+                <div class="bubble-tail"></div>
+                <p id="bubble-text"></p>
+              </div>
+              <div id="step-detail"></div>
+            </div>
+          </div>
+
+          <div id="stage-progress" style="width:0%"></div>
+          <div id="stage-counter"></div>
+          <div id="stage-brand">GOPIKA · FINANCE SPEAKER'S EDGE</div>
+        </div>
+
+        <!-- Controls -->
+        <div class="pres-controls">
+          <button class="ctrl-btn" id="btn-back" onclick="goPrev()" style="display:none">← Back</button>
+          <button class="ctrl-btn next" id="btn-next" onclick="goNext()">Let's Begin →</button>
+          <button class="ctrl-btn auto" id="btn-auto" onclick="toggleAuto()">▶ Auto</button>
+          <div class="dots-row" id="dots-row"></div>
+        </div>
+        <div class="jump-row" id="jump-row"></div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="footer">
+  <p>Created by <a href="https://www.linkedin.com/in/gopika" target="_blank">Gopika</a> · Finance Communicator & Public Speaker · Kerala &nbsp;|&nbsp; Powered by Google Gemini AI</p>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════
+//  Prof. Bolt — Node.js Edition
+//  Created by Gopika · Finance Communicator
+// ══════════════════════════════════════════════
+
+const MAX = 5;
+let lesson = null, phase = 'input', stepIdx = 0, autoPlay = false, autoTimer = null;
+let mediaRecorder = null, recordChunks = [], isRecording = false;
+
+// ── Sample texts ─────────────────────────────
+const SAMPLES = {
+  fcp: `The FCP Method is a framework for finance professionals who want to become confident public speakers. It has three pillars: Foundation, Conversion, and Persuasion. Foundation means building your speaker identity — knowing your unique voice, your authority, and how to carry yourself on stage. Conversion means translating complex financial language into simple, human communication that any audience can understand. Persuasion means using storytelling, data, and emotion to move your audience toward a decision or action. Together, these three pillars transform a finance expert into a finance communicator.`,
+  gst: `The Goods and Services Tax (GST) is a comprehensive indirect tax levied on the supply of goods and services in India. It replaced multiple cascading taxes. GST has four tax slabs: 5%, 12%, 18%, and 28%. It works on a dual structure — Central GST (CGST) and State GST (SGST) for intra-state transactions, and Integrated GST (IGST) for inter-state transactions. Input Tax Credit (ITC) allows businesses to offset tax paid on inputs against tax payable on output, eliminating the cascading effect of taxation.`,
+  ind: `Ind AS 115 deals with Revenue from Contracts with Customers. It follows a five-step model: Step 1 — Identify the contract with a customer. Step 2 — Identify the performance obligations in the contract. Step 3 — Determine the transaction price. Step 4 — Allocate the transaction price to performance obligations. Step 5 — Recognize revenue when or as performance obligations are satisfied. Revenue is recognized when control of goods or services transfers to the customer, either at a point in time or over time depending on the nature of the obligation.`,
+  ai: `Artificial Intelligence is the simulation of human intelligence by computer systems. Machine Learning is a subset of AI where systems learn from data without being explicitly programmed. Deep Learning uses neural networks with many layers to recognize patterns in data. Large Language Models like GPT and Gemini are trained on vast amounts of text and can generate human-like responses. AI works through training — feeding large datasets into models, which adjust their parameters to minimize errors and improve predictions over time.`
+};
+
+function loadSample(key) {
+  document.getElementById('doc-input').value = SAMPLES[key];
+  checkReady();
+}
+
+// ── Usage tracking ────────────────────────────
+function getToday() { return new Date().toISOString().slice(0,10); }
+function getUsage() {
+  try {
+    const r = localStorage.getItem('pb_usage');
+    if (!r) return { date: getToday(), count: 0 };
+    const d = JSON.parse(r);
+    return d.date === getToday() ? d : { date: getToday(), count: 0 };
+  } catch { return { date: getToday(), count: 0 }; }
+}
+function incUsage() { const d = getUsage(); d.count++; localStorage.setItem('pb_usage', JSON.stringify(d)); }
+function usesLeft() { return Math.max(0, MAX - getUsage().count); }
+
+function renderPips() {
+  const used = getUsage().count;
+  document.getElementById('pips').innerHTML =
+    Array.from({ length: MAX }, (_, i) =>
+      `<div class="pip ${i < used ? 'used' : i === used && used < MAX ? 'active' : ''}"></div>`
+    ).join('');
+  const el = document.getElementById('uses-left');
+  if (el) el.textContent = usesLeft() > 0 ? `${usesLeft()} left` : 'done today';
+}
+
+function checkReady() {
+  const has = !!document.getElementById('doc-input').value.trim();
+  document.getElementById('go-btn').disabled = !has || usesLeft() === 0;
+}
+
+// ── Robot SVG builder ─────────────────────────
+function buildRobot(el, mood, floating) {
+  if (!el) return;
+  const M = {
+    excited:    { bLY:36, bRY:36, mouth:"M34,78 Q50,90 66,78", cheek:true,  pc:'#22d3ee' },
+    thinking:   { bLY:42, bRY:34, mouth:"M38,78 Q50,82 62,80", cheek:false, pc:'#f59e0b' },
+    pointing:   { bLY:37, bRY:37, mouth:"M36,76 Q50,86 64,76", cheek:false, pc:'#22d3ee' },
+    celebrating:{ bLY:32, bRY:32, mouth:"M30,74 Q50,92 70,74", cheek:true,  pc:'#22d3ee' },
+  };
+  const m = M[mood] || M.thinking;
+  const aL = mood==='pointing' ? 'armSwing 1s ease-in-out infinite alternate'
+           : mood==='celebrating' ? 'armRaise .7s ease-in-out infinite alternate' : 'none';
+  const aR = mood==='celebrating' ? 'armRaiseR .7s ease-in-out infinite alternate' : 'none';
+  el.style.animation = floating ? 'roboFloat 4s ease-in-out infinite alternate' : 'none';
+  el.innerHTML = `
+    <rect x="32" y="158" width="14" height="28" rx="6" fill="#4a3728"/>
+    <rect x="54" y="158" width="14" height="28" rx="6" fill="#4a3728"/>
+    <ellipse cx="39" cy="186" rx="11" ry="6" fill="#2d1f14"/>
+    <ellipse cx="61" cy="186" rx="11" ry="6" fill="#2d1f14"/>
+    <rect x="20" y="100" width="60" height="62" rx="14" fill="#5c4033"/>
+    <rect x="22" y="102" width="56" height="58" rx="12" fill="#6b4c38"/>
+    <rect x="30" y="112" width="40" height="28" rx="8" fill="#3d2a1e" stroke="#c8a26a" stroke-width="1.5"/>
+    <circle cx="40" cy="122" r="4" fill="#f59e0b" style="animation:chestGlow 1.5s infinite alternate"/>
+    <circle cx="50" cy="122" r="4" fill="#ef4444" style="animation:chestGlow 1.5s infinite alternate;animation-delay:.5s"/>
+    <circle cx="60" cy="122" r="4" fill="#22c55e" style="animation:chestGlow 1.5s infinite alternate;animation-delay:1s"/>
+    <rect x="33" y="132" width="34" height="2" rx="1" fill="#2a1c11" opacity=".7"/>
+    <rect x="33" y="136" width="34" height="2" rx="1" fill="#2a1c11" opacity=".7"/>
+    <rect x="33" y="140" width="34" height="2" rx="1" fill="#2a1c11" opacity=".7"/>
+    <rect x="33" y="144" width="34" height="2" rx="1" fill="#2a1c11" opacity=".7"/>
+    <rect x="4" y="106" width="16" height="38" rx="8" fill="#5c4033" style="transform-origin:12px 106px;animation:${aL}"/>
+    <rect x="80" y="106" width="16" height="38" rx="8" fill="#5c4033" style="transform-origin:88px 106px;animation:${aR}"/>
+    <circle cx="12" cy="148" r="9" fill="#4a3728"/>
+    <circle cx="88" cy="148" r="9" fill="#4a3728"/>
+    ${mood==='pointing'?'<ellipse cx="4" cy="152" rx="5" ry="7" fill="#4a3728" transform="rotate(-20 4 152)"/>':''}
+    <rect x="38" y="92" width="24" height="14" rx="4" fill="#4a3728"/>
+    <rect x="42" y="93" width="16" height="2" rx="1" fill="#3d2a1e"/>
+    <rect x="42" y="97" width="16" height="2" rx="1" fill="#3d2a1e"/>
+    <rect x="42" y="101" width="16" height="2" rx="1" fill="#3d2a1e"/>
+    <rect x="12" y="30" width="76" height="66" rx="22" fill="#6b4c38"/>
+    <rect x="14" y="32" width="72" height="62" rx="20" fill="#7a5642"/>
+    <circle cx="20" cy="38" r="4" fill="#4a3728" stroke="#c8a26a" stroke-width="1"/>
+    <circle cx="80" cy="38" r="4" fill="#4a3728" stroke="#c8a26a" stroke-width="1"/>
+    <circle cx="20" cy="88" r="4" fill="#4a3728" stroke="#c8a26a" stroke-width="1"/>
+    <circle cx="80" cy="88" r="4" fill="#4a3728" stroke="#c8a26a" stroke-width="1"/>
+    <rect x="18" y="44" width="26" height="22" rx="8" fill="#1a0f0a" stroke="#c8a26a" stroke-width="2"/>
+    <rect x="56" y="44" width="26" height="22" rx="8" fill="#1a0f0a" stroke="#c8a26a" stroke-width="2"/>
+    <rect x="20" y="46" width="22" height="18" rx="6" fill="#0f2027" style="animation:eyeGlow 3s ease-in-out infinite alternate"/>
+    <rect x="58" y="46" width="22" height="18" rx="6" fill="#0f2027" style="animation:eyeGlow 3s ease-in-out infinite alternate;animation-delay:.2s"/>
+    <circle cx="31" cy="55" r="${mood==='celebrating'?6:5}" fill="${m.pc}" style="transform-origin:31px 55px;animation:pupilPulse 2s infinite alternate"/>
+    <circle cx="69" cy="55" r="${mood==='celebrating'?6:5}" fill="${m.pc}" style="transform-origin:69px 55px;animation:pupilPulse 2s infinite alternate;animation-delay:.3s"/>
+    <circle cx="34" cy="51" r="2" fill="#fff" opacity=".7"/>
+    <circle cx="72" cy="51" r="2" fill="#fff" opacity=".7"/>
+    <rect x="18" y="${m.bLY}" width="26" height="4" rx="2" fill="#c8a26a"/>
+    <rect x="56" y="${m.bRY}" width="26" height="4" rx="2" fill="#c8a26a"/>
+    <path d="${m.mouth}" fill="none" stroke="#c8a26a" stroke-width="3" stroke-linecap="round"/>
+    ${m.cheek?'<circle cx="18" cy="68" r="6" fill="#ef4444" opacity=".35"/><circle cx="82" cy="68" r="6" fill="#ef4444" opacity=".35"/>':''}
+    <line x1="50" y1="30" x2="50" y2="10" stroke="#c8a26a" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="50" cy="8" r="6" fill="#f59e0b" style="animation:antennaGlow 1.5s infinite alternate"/>
+    <circle cx="50" cy="8" r="3" fill="#fff" opacity=".6"/>
+    ${mood==='celebrating'?`
+      <line x1="30" y1="30" x2="20" y2="12" stroke="#c8a26a" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="18" cy="10" r="5" fill="#ef4444" style="animation:antennaGlow 1s infinite alternate;animation-delay:.3s"/>
+      <line x1="70" y1="30" x2="80" y2="12" stroke="#c8a26a" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="82" cy="10" r="5" fill="#22c55e" style="animation:antennaGlow 1s infinite alternate;animation-delay:.6s"/>
+    `:''}`;
+}
+
+// ── Init ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildRobot(document.getElementById('hero-robo'), 'excited', true);
+  buildRobot(document.getElementById('empty-robo'), 'thinking', true);
+  buildRobot(document.getElementById('stage-robo'), 'thinking', true);
+  renderPips();
+  checkReady();
+  document.getElementById('doc-input').addEventListener('input', checkReady);
+});
+
+// ── Analyze ───────────────────────────────────
+async function analyze() {
+  const txt = document.getElementById('doc-input').value.trim();
+  if (!txt || usesLeft() === 0) return;
+
+  setState('loading');
+
+  try {
+    const res = await fetch('/api/explain', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: txt }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    lesson = data;
+    incUsage();
+    renderPips();
+    startLesson();
+  } catch (err) {
+    setState('empty');
+    alert('Error: ' + err.message);
+  }
+}
+
+// ── State management ──────────────────────────
+function setState(s) {
+  document.getElementById('state-empty').style.display   = s === 'empty'   ? 'flex' : 'none';
+  document.getElementById('state-loading').style.display = s === 'loading' ? 'flex' : 'none';
+  document.getElementById('state-present').style.display = s === 'present' ? 'flex' : 'none';
+}
+
+// ── Lesson ────────────────────────────────────
+function startLesson() {
+  phase = 'intro'; stepIdx = 0;
+  document.getElementById('pres-title').textContent = lesson.title;
+  const theme = lesson.theme_color || 'purple';
+  document.getElementById('output-panel').className = 'output-panel theme-' + theme;
+  setState('present');
+  renderPhase();
+  setTimeout(showBubble, 400);
+}
+
+function renderPhase() {
+  const mood = phase === 'intro' ? 'excited' : phase === 'takeaway' ? 'celebrating' : lesson.character_mood || 'thinking';
+  buildRobot(document.getElementById('stage-robo'), mood, true);
+
+  document.getElementById('stage-counter').textContent =
+    phase === 'teaching' ? `${stepIdx+1} / ${lesson.steps.length}` :
+    phase === 'intro' ? 'INTRO' : 'DONE';
+
+  // Step detail
+  const sd = document.getElementById('step-detail');
+  sd.innerHTML = '';
+  if (phase === 'teaching' && lesson.steps[stepIdx]) {
+    const s = lesson.steps[stepIdx];
+    sd.innerHTML = `
+      <div class="step-detail">
+        <div class="step-head">
+          <span class="step-emoji">${s.emoji}</span>
+          <span class="step-title-text">${s.heading}</span>
+        </div>
+        <div class="kw-row">
+          <span class="kw-label">Key term →</span>
+          <span class="kw-badge">${s.keyword}</span>
+        </div>
+        ${s.visual ? `<div class="visual-hint">📸 Visual: ${s.visual}</div>` : ''}
+      </div>`;
+  } else if (phase === 'intro') {
+    sd.innerHTML = `<div class="intro-pills">${lesson.steps.map(s=>`<span class="intro-pill">${s.emoji} ${s.heading}</span>`).join('')}</div>`;
+  } else if (phase === 'takeaway') {
+    sd.innerHTML = `<div class="takeaway-done"><p>— LESSON COMPLETE —</p></div>`;
+  }
+
+  // Buttons
+  document.getElementById('btn-back').style.display = (phase !== 'intro') ? 'inline-block' : 'none';
+  const nb = document.getElementById('btn-next');
+  nb.textContent = phase === 'takeaway' ? '↺ New Lesson'
+    : phase === 'intro' ? "Let's Begin →"
+    : stepIdx < lesson.steps.length - 1 ? 'Next Step →' : 'Finish →';
+
+  // Progress
+  const tot = lesson.steps.length + 2;
+  const cur = phase === 'intro' ? 0 : phase === 'teaching' ? stepIdx + 1 : tot - 1;
+  document.getElementById('stage-progress').style.width = ((cur / (tot-1)) * 100) + '%';
+
+  // Dots
+  document.getElementById('dots-row').innerHTML =
+    Array.from({ length: tot }, (_, i) =>
+      `<div class="dot ${i === cur ? 'active' : i < cur ? 'past' : 'future'}"></div>`
+    ).join('');
+
+  // Jump row
+  const jr = document.getElementById('jump-row');
+  if (phase === 'teaching') {
+    jr.innerHTML = lesson.steps.map((s, i) =>
+      `<button class="jump-btn ${i===stepIdx?'on':''}" onclick="jumpTo(${i})">${s.emoji} ${s.heading}</button>`
+    ).join('');
+    jr.style.display = 'flex';
+  } else { jr.innerHTML = ''; jr.style.display = 'none'; }
+}
+
+function showBubble() {
+  const b = document.getElementById('bubble');
+  let t = '';
+  if (phase === 'intro') t = `${lesson.hook} — ${lesson.why_it_matters}`;
+  else if (phase === 'takeaway') t = `✦ Remember this: ${lesson.takeaway}`;
+  else t = lesson.steps[stepIdx]?.explanation || '';
+  document.getElementById('bubble-text').textContent = t;
+  b.classList.remove('hidden'); b.classList.add('visible');
+}
+
+function hideBubble(cb) {
+  const b = document.getElementById('bubble');
+  b.classList.remove('visible'); b.classList.add('hidden');
+  setTimeout(cb, 300);
+}
+
+function goNext() {
+  if (phase === 'takeaway') { resetAll(); return; }
+  hideBubble(() => {
+    if (phase === 'intro') { phase = 'teaching'; stepIdx = 0; }
+    else if (phase === 'teaching') {
+      stepIdx < lesson.steps.length - 1 ? stepIdx++ : (phase = 'takeaway');
+    }
+    renderPhase(); setTimeout(showBubble, 200);
+  });
+}
+
+function goPrev() {
+  hideBubble(() => {
+    if (phase === 'takeaway') { phase = 'teaching'; stepIdx = lesson.steps.length - 1; }
+    else if (phase === 'teaching' && stepIdx > 0) stepIdx--;
+    else if (phase === 'teaching') phase = 'intro';
+    renderPhase(); setTimeout(showBubble, 200);
+  });
+}
+
+function jumpTo(i) { hideBubble(() => { stepIdx = i; renderPhase(); setTimeout(showBubble, 200); }); }
+function tapStage() { /* intentionally no-op — controls handle nav */ }
+
+function toggleAuto() {
+  autoPlay = !autoPlay;
+  const b = document.getElementById('btn-auto');
+  b.textContent = autoPlay ? '⏸ Pause' : '▶ Auto';
+  b.classList.toggle('on', autoPlay);
+  if (autoPlay) sched(); else clearTimeout(autoTimer);
+}
+function sched() {
+  clearTimeout(autoTimer);
+  if (autoPlay && lesson && phase !== 'input')
+    autoTimer = setTimeout(() => { goNext(); if (autoPlay && phase !== 'input') sched(); }, 5000);
+}
+
+function resetAll() {
+  lesson = null; phase = 'input'; stepIdx = 0;
+  clearTimeout(autoTimer); autoPlay = false;
+  document.getElementById('btn-auto').textContent = '▶ Auto';
+  document.getElementById('btn-auto').classList.remove('on');
+  document.getElementById('output-panel').className = 'output-panel';
+  setState('empty');
+  buildRobot(document.getElementById('empty-robo'), 'thinking', true);
+  renderPips(); checkReady();
+}
+
+// ── Record ────────────────────────────────────
+function toggleRecord() {
+  if (!isRecording) startRecord(); else stopRecord();
+}
+
+async function startRecord() {
+  try {
+    const stage = document.getElementById('pres-stage');
+    const stream = stage.captureStream ? stage.captureStream(30) : null;
+    if (!stream) { alert('Recording not supported in this browser. Use Chrome.'); return; }
+    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+    recordChunks = [];
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordChunks.push(e.data); };
+    mediaRecorder.onstop = downloadRecording;
+    mediaRecorder.start(100);
+    isRecording = true;
+    const btn = document.getElementById('rec-btn');
+    btn.textContent = '⏹ Stop';
+    btn.classList.add('recording');
+  } catch (e) { alert('Could not start recording: ' + e.message); }
+}
+
+function stopRecord() {
+  if (mediaRecorder) mediaRecorder.stop();
+  isRecording = false;
+  const btn = document.getElementById('rec-btn');
+  btn.textContent = '⏺ Record';
+  btn.classList.remove('recording');
+}
+
+function downloadRecording() {
+  const blob = new Blob(recordChunks, { type: 'video/webm' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'prof-bolt-lesson.webm';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ── Fullscreen ────────────────────────────────
+function toggleFullscreen() {
+  const stage = document.getElementById('pres-stage');
+  if (!document.fullscreenElement) {
+    stage.requestFullscreen?.().catch(() => {});
+  } else {
+    document.exitFullscreen?.();
+  }
+}
+
+function scrollToHow() { document.getElementById('how').scrollIntoView({ behavior: 'smooth' }); }
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && phase !== 'input') { e.preventDefault(); goNext(); }
+  if (e.code === 'ArrowRight') goNext();
+  if (e.code === 'ArrowLeft') goPrev();
+});
+</script>
+</body>
+</html>
